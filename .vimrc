@@ -1,220 +1,375 @@
-" Chris Schilling .vimrc
+set shell=/bin/bash
 
-" Vundle plugin installer
-" :PluginInstall
+
+
+" vim-plug
+" Install vim-plug if not found
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+
+call plug#begin('~/.vim/plugged')
+Plug 'scrooloose/nerdtree'
+Plug 'preservim/nerdcommenter'
+Plug 'preservim/tagbar'
+Plug 'sjl/badwolf'
+Plug 'godlygeek/tabular'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-scripts/a.vim'
+Plug 'octol/vim-cpp-enhanced-highlight'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+Plug 'vim-scripts/Conque-GDB'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-repeat'
+Plug 'https://github.com/Valloric/YouCompleteMe.git'
+"Plug 'Valloric/YouCompleteMe'
+Plug 'tenfyzhong/vim-gencode-cpp'
+Plug 'Raimondi/delimitMate'
+call plug#end()
+
+" Run PlugInstall if there are missing plugins
+if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+
+
+" Vanilla vim settings
+syntax on
+filetype plugin on
 set nocompatible
-filetype off
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-Plugin 'gmarik/Vundle.vim' " Plugin Manager
-Plugin 'tpope/vim-fugitive' " Git Wrapper
-Plugin 'vim-airline/vim-airline' " Lower status bar
-Plugin 'vim-airline/vim-airline-themes'
-"Plugin 'tpope/vim-rails' " Ruby on Rails
-Plugin 'scrooloose/nerdtree' " File Explorer
-Plugin 'tomtom/tcomment_vim' " Easier Code Commenting
-" Plugin 'tpope/vim-surround' " Easier surround with brackets
-Plugin 'Lokaltog/vim-easymotion'
-Plugin 'tpope/vim-repeat' " Help . command work with plugin operations
-Plugin 'Valloric/YouCompleteMe'
-Plugin 'jiangmiao/auto-pairs' " Auto pairing of quotes/brackets etc.
-Plugin 'vim-ruby/vim-ruby' " Ruby Extensions
-Plugin 'ervandew/supertab' " Better Tab completion
-Plugin 'scrooloose/syntastic' " Syntax Checking
-Plugin 'kien/ctrlp.vim'
-"Plugin 'tacahiroy/ctrlp-funky'
-" Plugin 'davetron5000/java-javadoc-vim'
-Plugin 'octol/vim-cpp-enhanced-highlight' " Better C++ syntax highlighting
-Plugin 'justinmk/vim-syntax-extra' " Better syntax highlighting everywhere
-"Plugin 'jelera/vim-javascript-syntax' " Better JavaScript syntax highlighting
-Plugin 'pangloss/vim-javascript'
-" Plugin 'sentientmachine/erics_vim_syntax_and_color_highlighting'
-Plugin 'severin-lemaignan/vim-minimap'
-Plugin 'jonathanfilip/vim-lucius'
-Plugin 'vim-utils/vim-ruby-fold'
-Plugin 'majutsushi/tagbar'
-call vundle#end()
-filetype plugin indent on
-silent !stty -ixon > /dev/null 2>/dev/null
-set omnifunc=syntaxcomplete#Complete
-syntax enable
-"call togglebg#map("<F5>")
-
-" Syntastic Recommended Settings
-"set statusline+=%#warningmsg#
-"set statusline+=%{SyntasticStatuslineFlag()}
-"set statusline+=%*
-"let g:syntastic_always_populate_loc_list = 1
-"let g:syntastic_auto_loc_list = 1
-"let g:syntastic_auto_loc_height = 5
-"let g:syntastic_check_on_open = 1
-"let g:syntastic_check_on_wq = 0
-" Syntastic Checkers
-"let g:syntastic_ruby_checkers = ['mri']
-"let g:syntastic_c_checkers = ['gcc']
-"let g:syntastic_css_checkers = ['csslint']
-"let g:syntastic_html_checkers = ['jshint']
-"let g:syntastic_java_checkers = ['javac']
-
-
-let mapleader = ","
-set mouse:a
-set background=light
+set showcmd
+set sm
+set ic
+set ts=4
+set showmode
+set ruler
+set nostartofline
 set hlsearch
-set nu
-set smartindent
+set hidden
+set wildmenu
+set backspace=indent,eol,start
+set ai
+set t_vb=
+set mouse=a
+set visualbell
+set confirm
+set cmdheight=2
+set number
+set notimeout ttimeout timeoutlen=200
+set pastetoggle=<F11>
+set shiftwidth=4
+set softtabstop=4
+set tabstop=4
 set expandtab
-"hi Normal ctermbg=none
-filetype on
-" Tab Indentation
-set tabstop=2
-set expandtab
-set shiftwidth=2
-set softtabstop=2
-"Treat all numerals as decimal instead of octal even with 0 padding
-set nrformats=
-
-" Auto-Pairs FlyMode
-let g:AutoPairsFlyMode = 0
-"nnoremap i] i]<Esc>
-"inoremap i] ]
-"nnoremap i) i)<Esc>
-"inoremap i) )
-
-" Syntax Highlighting
-set t_Co=256
-colorscheme lucius
-au BufReadPost *.twig colorscheme lucius 
-au BufReadPost *.css colorscheme lucius 
-au BufReadPost *.js colorscheme lucius 
-au BufReadPost *.py colorscheme lucius
-au BufReadPost *.html colorscheme lucius
-au BufReadPost *.cpp colorscheme lucuis
-au BufReadPost *.c colorscheme lucius
-au BufReadPost *.h colorscheme lucius
-au BufReadPost *.hs colorscheme lucius
-au BufReadPost *.php colorscheme lucius
-au BufReadPost *.java colorscheme lucius
-autocmd FileType java colorscheme lucius
-
-"Disable Search Highlighting
-set nohlsearch
-
-set pastetoggle=<F2>
-set clipboard=unnamed
-
-" Disable swap files
+set notimeout
+set ttimeout
+set timeoutlen=2000
+set nowrap
+set laststatus=2
+set ttymouse=xterm2
+set foldmethod=manual
+"set foldlevelstart=1
 set nobackup
 set nowritebackup
 set noswapfile
+set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.ali,*.o,*.tgz
+nnoremap <leader>rv :source ~/.vimrc<CR>
+"set termguicolors
+"set nohlsearch
+set t_Co=256
+autocmd BufEnter *.c :setlocal filetype=cpp
+let mapleader = ","
 
-" Unmap the Arrow Keys
-no <down> <Nop>
-no <left> <Nop>
-no <right> <Nop>
-no <up> <Nop>
-ino <down> <Nop>
-ino <left> <Nop>
-ino <right> <Nop>
-ino <up> <Nop>
+if has("gui_running")
+	colorscheme badwolf
+    " Guioptions
+    set guioptions-=m
+    set guioptions-=T
+    set guioptions-=r
+    set guioptions-=rS
+    set guioptions-=L
+    set termguicolors
+    set guifont=Monospace\ 9
+else
+	colorscheme badwolf
+endif
 
-" Various Mappings
-"   Window Movement
+augroup remember_folds
+  autocmd!
+  autocmd BufWinLeave ?* silent! mkview | filetype detect
+  autocmd BufWinEnter ?* loadview | filetype detect
+augroup END
+
+" Alt-Mapping fix
+let c='a'
+while c <= 'z'
+    exec "set <A-".c.">=\e".c
+    exec "imap \e".c." <A-".c.">"
+    let c = nr2char(1+char2nr(c))
+endw
+set timeout ttimeoutlen=50
+
+
+
+" Snippets
+nnoremap <leader>for :read ~/.vim/for_loop.txt<cr>V3j=fBcw
+
+
+
+" Build & Run
+"nnoremap <leader><leader>m :cd build<cr>:!clear ; /bin/time --format="took \%E" make -C build -j<cr>:cd ..<cr>
+nnoremap <leader><leader>m :make -C build -j<cr>
+"nnoremap <leader><leader>m :!clear ; /bin/time --format="took \%E" make -C build -j<cr>
+nnoremap <leader><leader>r :!clear ; ./build/display_renderer ifr-4000 127.0.0.1 127.0.0.1 6976<cr>
+nnoremap <leader><leader>c :!clear ; ./build/HCNAT_CockpitSim<cr>
+nnoremap <leader><leader>b :!clear ; make ; make run<cr>
+
+
+
+" Grep
+"nnoremap <leader>g :let @/='\<<C-R>=expand("<cword>")<CR>\>'<CR>:set hls<CR>:Grep --color=auto -rI --exclude-dir="\.git" --exclude=\*.{ali,o,exe} --include=\*.{c,cpp,CPP,h,ads,adb,py,xml,ipp,def,dex,f,c_imp,c_file,imp,exp,xref,cscan,base} <c-r><c-w><space>
+"nnoremap <leader>f :let @/='\<<C-R>=expand("<cword>")<CR>\>'<CR>:set hls<CR>:Grep -rIE --exclude-dir="\.git" --exclude=\*.{ali,o,exe} --include=\*.{c,cpp,CPP,h,ads,adb,py,xml,ipp,def,dex,f,c_imp,c_file,imp,exp,xref,cscan,base} (\.\|->)*<c-r><c-w>(.)*\;*<space>
+"nnoremap <leader>p :let @/='\<<C-R>=expand("<cword>")<CR>\>'<CR>:set hls<CR>:Grep -rIE --exclude-dir="\.git" --exclude=\*.{ali,o,exe} --include=\*.{c,cpp,CPP,h,ads,adb,py,xml,ipp,def,dex,f,c_imp,c_file,imp,exp,xref,cscan,base} PACKAGE(.)*<c-r><c-w>(.)*IS<space>
+"nnoremap <leader>e :let @/='\<<C-R>=expand("<cword>")<CR>\>'<CR>:set hls<CR>:Grep -rIE --exclude-dir="\.git" --exclude=\*.{ali,o,exe} --include=\*.{c,cpp,CPP,h,ads,adb,py,xml,ipp,def,dex,f,c_imp,c_file,imp,exp,xref,cscan,base} PROCEDURE(.)*<c-r><c-w>(.)*IS<space>
+"nnoremap <leader>g :let @/='\<<C-R>=expand("<cword>")<CR>\>'<CR>:set hls<CR>:Ag -rI --exclude-dir="\.git" --exclude=\*.{ali,o,exe} --include=\*.{c,cpp,CPP,h,ads,adb,py,xml,ipp,def,dex,f,c_imp,c_file,imp,exp,xref,cscan,base} <c-r><c-w><space>
+"vnoremap <leader>g :let @/='\<<C-R>=expand("<cword>")<CR>\>'<CR>:set hls<CR>:Grep -rI --exclude-dir="\.git" --exclude=\*.{ali,o,exe} --include=\*.{c,cpp,CPP,h,ads,adb,py,xml,ipp,def,dex,f,c_imp,c_file,imp,exp,xref} @*<space>
+"vnoremap <leader>g :Grep -rI --exclude-dir="\.git" --exclude=\*.{ali,o,exe} --include=\*.{c,cpp,CPP,h,ads,adb,py,xml,ipp,def,dex,f,c_imp,c_file,imp,exp,xref} @*<space>
+"nnoremap <leader>g vGrep -rI --exclude-dir="\.git" --exclude=\*.{ali,o,exe} --include=\*.{c,cpp,CPP,h,ads,adb,py,xml,ipp,def,dex,f} <c-r><c-w><space>
+
+
+
+" Save/Quit and Window/Tab Movement
+nnoremap <leader>q :quitall<CR>
 nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
-
-" Write and Quit
+nnoremap <A-l> :tabnext<cr>
+nnoremap <A-h> :tabprev<cr>
+nnoremap <leader>T <c-w><Enter><c-w>T
 nnoremap <C-q> :q<CR>
 inoremap <C-q> <Esc>:q<CR>
 nnoremap <C-Q> :q!<CR>
 inoremap <C-Q> <Esc>:q!<CR>
-nnoremap <C-w> :w<CR>
-inoremap <C-w> <Esc>:w<CR><Esc>
-"command! -bar -bang Q quit<bang>
-
+nnoremap <C-s> :w<CR>
+inoremap <C-s> <Esc>:w<CR><Esc>
+nnoremap gb :ls<cr>:b<space>
 " Cycle through buffers
-nnoremap ] :bnext<CR>
-nnoremap [ :bprevious<CR>
-
-" Leader Binds
-nnoremap <leader>ev :vsplit $MYVIMRC<CR>
-nnoremap <leader>rv :source $MYVIMRC<CR>
-nnoremap <leader>n :NERDTree<CR>
-
-" Fix Block - Fixes if/else to have brackets for single branch command
-inoremap <leader>fb <Esc>kA{<CR><Esc>ddA<CR>}<Esc>=
-nnoremap <leader>fb kA{<CR><Esc>ddA<CR>}<Esc>=
-
-
-" Paste-mode Toggle
-set pastetoggle=<F10>
-
-" Makefile Shortcuts
-nnoremap <leader><leader>m :make!<CR>
-inoremap <leader><leader>m <Esc>:make!<CR>
-nnoremap <leader><leader>r :make!<space>run<CR>
-inoremap <leader><leader>r <Esc>:make!<space>run<CR>
-nnoremap <leader><leader>t :make!<space> test<CR>
-inoremap <leader><leader>t <Esc>:make!<space> test<CR>
-nnoremap <leader><leader>c :make!<space> clean<CR>
-inoremap <leader><leader>c <Esc>:make!<space> clean<CR>
-
-" Shift-K Manuals
-autocmd FileType cpp set keywordprg=cppman
-
-"Java Development Keybinds
-autocmd FileType java set keywordprg=
-" System.out.println("")  mapping
-nnoremap <leader><leader>sys iSystem.out.println("");<Esc>hhi
-inoremap <leader><leader>sys System.out.println("");<Esc>hhi
-" Integer.parseInt() mapping
-nnoremap <leader><leader>ipi iInteger.parseInt();<Esc>hi
-inoremap <leader><leader>ipi Integer.parseInt();<Esc>hi
-
-"Code Folding
-autocmd BufReadPost * hi Folded ctermfg=darkgray
-hi Folded ctermfg=darkgray
-set foldmethod=indent   "fold based on indent
-set foldnestmax=30      "deepest fold is 30 levels
-set foldlevel=1         "this is just what i use
-set nowrap
-"  Save folds and cursore position between sessions
-autocmd BufWinLeave *.* mkview
-autocmd BufWinEnter *.* silent loadvie
-"  Space to toggle current fold. If not a fold, move right.
-nnoremap <silent> <Space> @=(foldlevel('.')?'za':"\<Space>")<CR>
-"  Visually selected code fold with space
-vnoremap <Space> zf
+"nnoremap ] :bnext<CR>
+"nnoremap [ :bprevious<CR>
+function! GotoJump()
+    jumps
+    let j = input("Please select your jump: ")
+    if j != ''
+        let pattern = '\v\c^\+'
+        if j =~ pattern
+            let j = substitute(j, pattern, '', 'g')
+            execute "normal " . j . "\<c-i>"
+        else
+            execute "normal " . j . "\<c-o>"
+        endif
+    endif
+endfunction
+nmap <leader>j :call GotoJump()<CR>
 
 
-" Vim-Minimap Highlight Color
-let g:minimap_highlight='Special'
 
-" NerdTree
-let g:NERDTreeWinSize = 17
+" ====================================================== Plugins =============================================== "
 
-" Easy-Motion
-map <leader>l <Plug>(easymotion-lineforward)
-map <leader>j <Plug>(easymotion-j)
-map <leader>k <Plug>(easymotion-k)
-map <leader>h <Plug>(easymotion-linebackward)
-let g:EasyMotion_startofline = 0 " keep cursor column when JK motion"
-" nmap <leader> <Plug>(easymotion-prefix)
-" nmap t <Plug>(easymotion-s2)
 
-" Enable <C-x><C-k> dictionary autocompletion
-set dictionary+=/usr/share/dict/words
+" ------------------------------------------------------ NERDTree ----------------------------------------------- "
+let g:NERDTreeWinSize = 25
+"autocmd StdinReadPre * let s:std_in=1
+"autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+nnoremap <leader>n :NERDTreeToggle<CR>
+nnoremap <leader><leader>n :NERDTreeFind<CR>
+let NERDTreeMinimalUI = 1
+let NERDTreeDirArrows = 1
 
-" For loop shortcuts
-nnoremap <leader><leader>for ifor<space>(int<space>i<space>=<space>0;<space>i<space><<space>x;<space>i++){}<ESC>i<CR><ESC>k20lxi
-inoremap <leader><leader>for for<space>(int<space>i<space>=<space>0;<space>i<space><<space>x;<space>i++){}<ESC>i<CR><ESC>k20lxi
 
-" Autocompletion
-inoremap <leader>. .<c-x><c-o>
 
-" Ctags
-nnoremap <silent> <Leader>b :TagbarToggle<CR>
-nnoremap <leader>. :CtrlPTag<cr>
+" ------------------------------------------------------ nerdcommenter ----------------------------------------------- "
+nnoremap <c-/> <c-o>:call NERDComment(0, "toggle")<c-r>
+
+
+
+" ------------------------------------------------------ CTags/Tagbar ----------------------------------------------- "
+set tags=./tags;/
 nnoremap <leader>ct :!ctags -R .<CR>
+nnoremap <C-F> :CtrlPTag<CR>
+nnoremap <leader>b :TagbarToggle<CR>
+nnoremap <leader>tn :tn<cr>
+nnoremap <leader>tp :tp<cr>
+nnoremap <leader>]t :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
+nnoremap <leader>]v :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
+nnoremap <leader>]h :sp <CR>:exec("tag ".expand("<cword>"))<CR>
+let g:tagbar_left = 0
+
+
+
+
+" -------------------------------------------------- a.vim (Header Switcher) -------------------------------------------- "
+nnoremap <leader>h :A<cr>
+nnoremap <leader><leader>h <c-w>v:A<cr>
+
+
+
+" -------------------------------------------- C++ Enhanced Syntax Highlight ------------------------------------ "
+let g:cpp_class_scope_highlight     = 1
+let g:cpp_member_variable_highlight = 1
+let g:cpp_class_decl_highlight      = 1
+
+
+
+" ----------------------------------------------------- Airline  ------------------------------------------------ "
+let g:airline_skip_empty_sections             = 1
+let g:airline_inactive_collapse               = 1
+let g:airline_section_y                       = ''
+let g:airline_section_b                       = ''
+let g:airline_section_warning                 = ''
+let g:airline#extensions#tabline#enabled      = 1
+let g:airline#extensions#tabline#formatter    = 'unique_tail'
+let g:airline#extensions#tabline#left_sep     = ' '
+let g:airline#extensions#tabline#left_alt_sep = '|'
+let g:airline#extensions#whitespace#enabled   = 0
+
+
+
+
+" ----------------------------------------------------- Gruvbox  ------------------------------------------------ "
+let g:gruvbox_contrast_dark      = "hard"
+let g:gruvbox_contrast_light     = "hard"
+let g:gruvbox_vert_split         = "bg1"
+"let g:gruvbox_termcolors         = 256
+let g:gruvbox_bold               = 1
+let g:gruvbox_italic             = 1
+let g:gruvbox_italicize_comments = 0
+let g:gruvbox_italicize_strings  = 0
+let g:gruvbox_improved_strings   = 0
+let g:gruvbox_improved_warnings  = 1
+let g:gruvbox_invert_tabline     = 0
+set background=dark
+
+
+
+" ----------------------------------------------------- Conque GDB  ------------------------------------------- "
+"nnoremap <leader><leader>d :ConqueGdb /avcatt/avcsimc_dev/avcsim/ah64e40/avc/suite/mm/computer/load/bin1/cpu2_seq5
+let g:ConqueGdb_Leader      = '\'
+let g:ConqueGdb_Run         = g:ConqueGdb_Leader . 'r'
+let g:ConqueGdb_Continue    = g:ConqueGdb_Leader . 'c'
+let g:ConqueGdb_Next        = g:ConqueGdb_Leader . 'n'
+let g:ConqueGdb_Step        = g:ConqueGdb_Leader . 's'
+let g:ConqueGdb_Print       = g:ConqueGdb_Leader . 'p'
+let g:ConqueGdb_ToggleBreak = g:ConqueGdb_Leader . 'b'
+let g:ConqueGdb_SetBreak    = g:ConqueGdb_Leader . 'b'
+let g:ConqueGdb_Finish      = g:ConqueGdb_Leader . 'f'
+let g:ConqueGdb_Backtrace   = g:ConqueGdb_Leader . 't'
+let g:ConqueTerm_FastMode   = 1
+nnoremap <leader>dc :ConqueGdb build/HCNAT_CockpitSim<cr>
+nnoremap <leader>dr :ConqueGdb --args build/display_renderer ifr-4000 127.0.0.1 127.0.0.1 6976<cr>
+
+
+
+" -----------------------------------------------------  Tabularize  ------------------------------------------- "
+vnoremap <leader><leader>a :Tabularize /=<cr>
+vnoremap <expr> -<Space> ':Tabularize /\S\(' . split(&commentstring, '%s')[0] . '.*\)\@<!\zs\ /l0<CR>'
+nnoremap <expr> -<Space> ':Tabularize /\S\(' . split(&commentstring, '%s')[0] . '.*\)\@<!\zs\ /l0<CR>'
+
+
+
+" ------------------------------------------------------- Signature ----------------------------------------------- "
+"nnoremap <A-m> :SignatureListGlobalMarks<CR>
+"nnoremap [ :<C-U>call signature#mark#Goto("next", "spot", "global")<CR>
+"nnoremap ] :<C-U>call signature#mark#Goto("prev", "spot", "global")<CR>
+"nnoremap <leader>md :delmarks A-Z0-9<cr>:wviminfo!<cr>
+"let g:SignatureIncludeMarks = 'ABCDEFGHIJKLNOPRSTUVWXYZ'
+
+
+
+" ------------------------------------------------------- EasyMotion ----------------------------------------------- "
+map <leader> <Plug>(easymotion-prefix)
+map <leader>f <Plug>(easymotion-bd-f)
+nmap <leader>f <Plug>(easymotion-overwin-f)
+"nmap <leader>s <Plug>(easymotion-overwin-s)
+
+
+
+" ------------------------------------------------------- Fzf ----------------------------------------------- "
+nnoremap <C-p> :Files<cr>
+nnoremap <A-b> :Buffers<cr>
+nnoremap <A-n> :Lines<cr>
+let g:fzf_buffers_jump = 1
+let $FZF_DEFAULT_COMMAND = "ag --ignore '\*.ali' --ignore '\*.o' --ignore '\*.exe' --ignore 'build/\*' -g ''"
+let g:fzf_colors =
+\ { 'fg':      ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'hl':      ['fg', 'Comment'],
+  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+  \ 'hl+':     ['fg', 'Statement'],
+  \ 'info':    ['fg', 'PreProc'],
+  \ 'border':  ['fg', 'Ignore'],
+  \ 'prompt':  ['fg', 'Conditional'],
+  \ 'pointer': ['fg', 'Exception'],
+  \ 'marker':  ['fg', 'Keyword'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment'] }
+
+command! -bang -nargs=* FzfGrep
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number -g "!tags" -g "!*.ali" -g "!*.o" -g "!build" --hidden --no-heading --color="always" '.shellescape(<q-args>), 1,
+  \   <bang>0 ? fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'up:60%')
+  \           : fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'right:50%:hidden', '?'),
+  \   <bang>0)
+
+  "\ 'csearch '.shellescape(<q-args>,1).' | rg '.shellescape((<q-args>), 1), 
+command! -bang -nargs=* FzfCSearch
+  \ call fzf#vim#grep(
+  \ 'csearch '.shellescape(<q-args>, 1), 
+  \   <bang>0 ? fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'up:60%')
+  \           : fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'right:50%:hidden', '?'),
+  \   <bang>0)
+
+
+nnoremap <A-f> :FzfGrep <c-r><c-w><cr>
+nnoremap <A-g> :FzfGrep<cr>
+
+"command! -complete=shellcmd -nargs=+ Shell call s:RunShellCommand(<q-args>)
+
+"function! s:RunShellCommand(cmdline)
+  "echo a:cmdline
+  "let expanded_cmdline = a:cmdline
+  "for part in split(a:cmdline, ' ')
+     "if part[0] =~ '\v[%#<]'
+        "let expanded_part = fnameescape(expand(part))
+        "let expanded_cmdline = substitute(expanded_cmdline, part, expanded_part, '')
+     "endif
+  "endfor
+  "botright new
+  "setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile nowrap
+  "call setline(1, 'You entered:    ' . a:cmdline)
+  "call setline(2, 'Expanded Form:  ' .expanded_cmdline)
+  "call setline(3,substitute(getline(2),'.','=','g'))
+  "execute '$read !'. expanded_cmdline
+  "setlocal nomodifiable
+  "1
+"endfunction
+
+"command! -complete=shellcmd -nargs=+ Shell call s:ExecuteInShell(<q-args>)
+
+
+
+" ---------------------------------------------------- YouCompleteMe ------------------------------------------------------ "
+let g:ycm_global_ycm_extra_conf = '/hcnat/.ycm_extra_conf.py'
+nnoremap <leader><leader>y :YcmCompleter FixIt<cr>
+
+
+
+" ---------------------------------------------------- vim-surround  --------------------------------------------------------- "
+inoremap {<cr> {<cr>}<c-o>O
