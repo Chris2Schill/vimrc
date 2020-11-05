@@ -10,26 +10,27 @@ if empty(glob('~/.vim/autoload/plug.vim'))
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
-
 call plug#begin('~/.vim/plugged')
 Plug 'scrooloose/nerdtree'
 Plug 'preservim/nerdcommenter'
 Plug 'preservim/tagbar'
 Plug 'sjl/badwolf'
 Plug 'godlygeek/tabular'
-Plug 'vim-airline/vim-airline'
 Plug 'vim-scripts/a.vim'
+Plug 'vim-airline/vim-airline'
 Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'vim-scripts/Conque-GDB'
+Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
-Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-dispatch'
 Plug 'https://github.com/Valloric/YouCompleteMe.git'
-"Plug 'Valloric/YouCompleteMe'
+Plug 'Valloric/YouCompleteMe'
 Plug 'tenfyzhong/vim-gencode-cpp'
 Plug 'Raimondi/delimitMate'
+Plug 'christoomey/vim-tmux-navigator'
 call plug#end()
 
 " Run PlugInstall if there are missing plugins
@@ -60,7 +61,6 @@ set mouse=a
 set visualbell
 set confirm
 set cmdheight=2
-set number
 set notimeout ttimeout timeoutlen=200
 set pastetoggle=<F11>
 set shiftwidth=4
@@ -72,19 +72,23 @@ set ttimeout
 set timeoutlen=2000
 set nowrap
 set laststatus=2
-set ttymouse=xterm2
+set ttymouse=sgr
 set foldmethod=manual
 "set foldlevelstart=1
 set nobackup
 set nowritebackup
 set noswapfile
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.ali,*.o,*.tgz
-nnoremap <leader>rv :source ~/.vimrc<CR>
 "set termguicolors
 "set nohlsearch
 set t_Co=256
+xnoremap p pgvy
 autocmd BufEnter *.c :setlocal filetype=cpp
+autocmd BufEnter * :set number
+autocmd BufEnter * :set relativenumber
 let mapleader = ","
+nnoremap <leader>vimrc :tabe ~/.vimrc<CR>
+autocmd BufWritePost .vimrc source $MYVIMRC
 
 if has("gui_running")
 	colorscheme badwolf
@@ -103,7 +107,7 @@ endif
 augroup remember_folds
   autocmd!
   autocmd BufWinLeave ?* silent! mkview | filetype detect
-  autocmd BufWinEnter ?* loadview | filetype detect
+  autocmd BufWinEnter ?* silent! loadview | filetype detect
 augroup END
 
 " Alt-Mapping fix
@@ -123,12 +127,16 @@ nnoremap <leader>for :read ~/.vim/for_loop.txt<cr>V3j=fBcw
 
 
 " Build & Run
-"nnoremap <leader><leader>m :cd build<cr>:!clear ; /bin/time --format="took \%E" make -C build -j<cr>:cd ..<cr>
-nnoremap <leader><leader>m :make -C build -j<cr>
-"nnoremap <leader><leader>m :!clear ; /bin/time --format="took \%E" make -C build -j<cr>
-nnoremap <leader><leader>r :!clear ; ./build/display_renderer ifr-4000 127.0.0.1 127.0.0.1 6976<cr>
-nnoremap <leader><leader>c :!clear ; ./build/HCNAT_CockpitSim<cr>
-nnoremap <leader><leader>b :!clear ; make ; make run<cr>
+nnoremap <leader>m :Make -C build -j<cr>
+
+let cwd = getcwd()
+if cwd == "/hcnat/cockpit_sim"
+    nmap <leader>r :Dispatch ./build/HCNAT_CockpitSim<cr>
+    nmap <leader>k :!pkill -9 HCNAT_Cock<cr>
+elseif cwd == "/hcnat/display_renderer"
+    nnoremap <leader>r :Dispatch ./build/display_renderer ifr-4000<cr>
+    nnoremap <leader>k :!pkill -9 display_r<cr>
+endif
 
 
 
@@ -184,7 +192,7 @@ nmap <leader>j :call GotoJump()<CR>
 
 
 " ------------------------------------------------------ NERDTree ----------------------------------------------- "
-let g:NERDTreeWinSize = 25
+let g:NERDTreeWinSize = 35
 "autocmd StdinReadPre * let s:std_in=1
 "autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 nnoremap <leader>n :NERDTreeToggle<CR>
@@ -195,7 +203,9 @@ let NERDTreeDirArrows = 1
 
 
 " ------------------------------------------------------ nerdcommenter ----------------------------------------------- "
-nnoremap <c-/> <c-o>:call NERDComment(0, "toggle")<c-r>
+nnoremap <c-_> :call NERDComment(0, 'toggle')<cr>
+inoremap <c-_> <c-o>:call NERDComment(0, 'toggle')<cr>
+vnoremap <c-_> :call NERDComment(0, 'toggle')<cr>
 
 
 
@@ -233,13 +243,14 @@ let g:airline_inactive_collapse               = 1
 let g:airline_section_y                       = ''
 let g:airline_section_b                       = ''
 let g:airline_section_warning                 = ''
-let g:airline#extensions#tabline#enabled      = 1
+let g:airline#extensions#tabline#enabled      = 0
 let g:airline#extensions#tabline#formatter    = 'unique_tail'
 let g:airline#extensions#tabline#left_sep     = ' '
 let g:airline#extensions#tabline#left_alt_sep = '|'
+let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:airline#extensions#whitespace#enabled   = 0
-
-
+let g:airline_highlighting_cache=1
+"set showtabline=2
 
 
 " ----------------------------------------------------- Gruvbox  ------------------------------------------------ "
@@ -280,6 +291,10 @@ nnoremap <leader>dr :ConqueGdb --args build/display_renderer ifr-4000 127.0.0.1 
 vnoremap <leader><leader>a :Tabularize /=<cr>
 vnoremap <expr> -<Space> ':Tabularize /\S\(' . split(&commentstring, '%s')[0] . '.*\)\@<!\zs\ /l0<CR>'
 nnoremap <expr> -<Space> ':Tabularize /\S\(' . split(&commentstring, '%s')[0] . '.*\)\@<!\zs\ /l0<CR>'
+xnoremap <leader>t= :Tabularize /\[=\]<cr>
+xnoremap <leader>t} :Tabularize /\v(.)*\zs}/l1c0<cr>
+xnoremap <leader>t, :Tabularize /,/l0c1<cr>
+nnoremap <leader>t, :Tabularize /,/l0c1<cr>
 
 
 
@@ -305,6 +320,7 @@ nnoremap <C-p> :Files<cr>
 nnoremap <A-b> :Buffers<cr>
 nnoremap <A-n> :Lines<cr>
 let g:fzf_buffers_jump = 1
+let g:fzf_layout = { 'down': '40%' }
 let $FZF_DEFAULT_COMMAND = "ag --ignore '\*.ali' --ignore '\*.o' --ignore '\*.exe' --ignore 'build/\*' -g ''"
 let g:fzf_colors =
 \ { 'fg':      ['fg', 'Normal'],
@@ -367,6 +383,7 @@ nnoremap <A-g> :FzfGrep<cr>
 
 " ---------------------------------------------------- YouCompleteMe ------------------------------------------------------ "
 let g:ycm_global_ycm_extra_conf = '/hcnat/.ycm_extra_conf.py'
+set completeopt-=preview
 nnoremap <leader><leader>y :YcmCompleter FixIt<cr>
 
 
