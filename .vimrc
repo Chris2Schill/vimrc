@@ -31,6 +31,7 @@ Plug 'https://github.com/Valloric/YouCompleteMe.git'
 Plug 'tenfyzhong/vim-gencode-cpp'
 Plug 'Raimondi/delimitMate'
 Plug 'christoomey/vim-tmux-navigator'
+Plug 'michaeljsmith/vim-indent-object'
 call plug#end()
 
 " Run PlugInstall if there are missing plugins
@@ -83,6 +84,7 @@ set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.ali,*.o,*.tgz
 "set termguicolors
 "set nohlsearch
 set t_Co=256
+inoremap {<cr> {<cr>}<c-o>O
 xnoremap p pgvy
 augroup CppGroup
     autocmd!
@@ -394,6 +396,3 @@ set completeopt-=preview
 nnoremap <leader><leader>y :YcmCompleter FixIt<cr>
 
 
-
-" ---------------------------------------------------- vim-surround  --------------------------------------------------------- "
-inoremap {<cr> {<cr>}<c-o>O
