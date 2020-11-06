@@ -12,7 +12,7 @@ endif
 
 call plug#begin('~/.vim/plugged')
 Plug 'scrooloose/nerdtree'
-Plug 'preservim/nerdcommenter'
+Plug 'tomtom/tcomment_vim'
 Plug 'preservim/tagbar'
 Plug 'sjl/badwolf'
 Plug 'godlygeek/tabular'
@@ -27,7 +27,7 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-dispatch'
 Plug 'https://github.com/Valloric/YouCompleteMe.git'
-Plug 'Valloric/YouCompleteMe'
+"Plug 'Valloric/YouCompleteMe'
 Plug 'tenfyzhong/vim-gencode-cpp'
 Plug 'Raimondi/delimitMate'
 Plug 'christoomey/vim-tmux-navigator'
@@ -73,6 +73,7 @@ set timeoutlen=2000
 set nowrap
 set laststatus=2
 set ttymouse=sgr
+set incsearch
 set foldmethod=manual
 "set foldlevelstart=1
 set nobackup
@@ -83,12 +84,18 @@ set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.ali,*.o,*.tgz
 "set nohlsearch
 set t_Co=256
 xnoremap p pgvy
-autocmd BufEnter *.c :setlocal filetype=cpp
-autocmd BufEnter * :set number
-autocmd BufEnter * :set relativenumber
+augroup CppGroup
+    autocmd!
+    autocmd BufEnter *.c :setlocal filetype=cpp
+    autocmd BufEnter * :set number
+    autocmd BufEnter * :set relativenumber
+augroup END
 let mapleader = ","
-nnoremap <leader>vimrc :tabe ~/.vimrc<CR>
-autocmd BufWritePost .vimrc source $MYVIMRC
+nnoremap <leader>vimrc :tabe ~/Documents/vimrc/.vimrc<CR>
+augroup VimrcGroup
+    autocmd!
+    autocmd BufWritePost .vimrc source $MYVIMRC
+augroup END
 
 if has("gui_running")
 	colorscheme badwolf
@@ -132,10 +139,10 @@ nnoremap <leader>m :Make -C build -j<cr>
 let cwd = getcwd()
 if cwd == "/hcnat/cockpit_sim"
     nmap <leader>r :Dispatch ./build/HCNAT_CockpitSim<cr>
-    nmap <leader>k :!pkill -9 HCNAT_Cock<cr>
+    nmap <leader>k :!pkill -9 HCNAT_Cock<cr><cr>:cclose<cr>
 elseif cwd == "/hcnat/display_renderer"
     nnoremap <leader>r :Dispatch ./build/display_renderer ifr-4000<cr>
-    nnoremap <leader>k :!pkill -9 display_r<cr>
+    nnoremap <leader>k :!pkill -9 display_r<cr><cr>:cclose<cr>
 endif
 
 
@@ -202,10 +209,10 @@ let NERDTreeDirArrows = 1
 
 
 
-" ------------------------------------------------------ nerdcommenter ----------------------------------------------- "
-nnoremap <c-_> :call NERDComment(0, 'toggle')<cr>
-inoremap <c-_> <c-o>:call NERDComment(0, 'toggle')<cr>
-vnoremap <c-_> :call NERDComment(0, 'toggle')<cr>
+" ------------------------------------------------------ tcomment ----------------------------------------------- "
+nnoremap <c-_> gcc
+inoremap <c-_> <c-o>:normal gcc
+vnoremap <c-_> :normal gcc
 
 
 
